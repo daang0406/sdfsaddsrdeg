@@ -1,11 +1,18 @@
 import streamlit as st
 import pandas as pd
 import gspread
+import os
+import json
 from oauth2client.service_account import ServiceAccountCredentials
 
 # Configurar las credenciales y autorizar el cliente de Google Sheets
 scope = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
-credenciales = ServiceAccountCredentials.from_json_keyfile_name("credential.json", scope)
+
+# Cargar las credenciales desde una variable de entorno
+credentials_json = os.getenv('GOOGLE_CREDENTIALS')  # Asegúrate de que la variable de entorno esté bien configurada
+credenciales_dict = json.loads(credentials_json) if credentials_json else None
+credenciales = ServiceAccountCredentials.from_json_keyfile_dict(credenciales_dict, scope)
+
 cliente = gspread.authorize(credenciales)
 
 # Obtener los datos de la hoja de cálculo
