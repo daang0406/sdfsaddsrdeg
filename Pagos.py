@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 import pandas as pd
 from datetime import datetime
+import pytz
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -19,9 +20,12 @@ credenciales = ServiceAccountCredentials.from_json_keyfile_name("credential.json
 cliente = gspread.authorize(credenciales)
 Info = cliente.open("Base de datos 1").get_worksheet(0)
 
-# Obtener fecha y hora actual
-fecha_actual = datetime.now().date().strftime('%d/%m/%Y')
-hora_actual = datetime.now().time().strftime('%H:%M')
+# Establecer la zona horaria
+tz = pytz.timezone('America/Bogota')  # Ajusta esto a tu zona horaria
+
+# Obtener fecha y hora actual ajustada a la zona horaria
+fecha_actual = datetime.now(tz).date().strftime('%d/%m/%Y')
+hora_actual = datetime.now(tz).time().strftime('%H:%M')
 
 # Interfaz de usuario
 st.title(f"Solicitud de compra {fecha_actual}")
@@ -30,8 +34,8 @@ st.markdown('<style>div.block-container{padding-top:1rem;}</style>', unsafe_allo
 cantidad = st.number_input("Cantidad:", min_value=0, step=1)
 montoUnidad = st.number_input("Monto por unidad:", min_value=0.0)
 montoTotal = st.number_input("Monto Total:", min_value=0.0)
-fecha = st.date_input("Fecha:", value=datetime.now().date())
-hora = st.write("Hora:", datetime.now().time().strftime('%H:%M'))
+fecha = st.date_input("Fecha:", value=datetime.now(tz).date())
+hora = st.write("Hora:", datetime.now(tz).time().strftime('%H:%M'))
 descripcion = st.text_input("Descripción:")
 estado = "Pendiente"
 
