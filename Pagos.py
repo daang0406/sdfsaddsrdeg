@@ -33,7 +33,9 @@ st.markdown('<style>div.block-container{padding-top:1rem;}</style>', unsafe_allo
 
 cantidad = st.number_input("Cantidad:", min_value=0, step=1)
 montoUnidad = st.number_input("Monto por unidad:", min_value=0.0)
-montoTotal = st.number_input("Monto Total:", min_value=0.0)
+montoTotal = cantidad*montoUnidad
+montoTotal_formateado = f"S/{montoTotal:.2f}"  
+st.write("Monto total: ", montoTotal_formateado)
 fecha = st.date_input("Fecha:", value=datetime.now(tz).date())
 hora = st.write("Hora:", datetime.now(tz).time().strftime('%H:%M'))
 descripcion = st.text_input("Descripción:")
@@ -42,7 +44,7 @@ estado = "Pendiente"
 # Validación y envío de datos
 if st.button("Enviar", key="Boton_enviar"):
     if descripcion and montoTotal and montoUnidad:
-        data = [[descripcion, montoTotal, montoUnidad, cantidad, fecha.strftime('%d/%m/%Y'), hora_actual, estado]]
+        data = [[descripcion, montoUnidad, montoTotal, cantidad, fecha.strftime('%d/%m/%Y'), hora_actual, estado]]
         columns = ['Descripción', 'Monto por unidad', 'Monto Total', 'Cantidad', 'Fecha', 'Hora', 'Estado']
         df = pd.DataFrame(data, columns=columns)
         sheet = cliente.open("Base de datos 1").get_worksheet(0)
